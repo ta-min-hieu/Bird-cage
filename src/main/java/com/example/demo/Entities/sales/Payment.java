@@ -21,5 +21,5 @@ public class Payment implements Serializable {
     @Column(name = "method")
     private String method;
     @Column(name = "payment_id")
-    private String paymentId;
+    private Integer paymentId;
 }

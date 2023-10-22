@@ -6,9 +6,13 @@ import com.example.demo.config.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -18,13 +22,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-public class PaymentController {
+@Log4j2
+@RequestMapping("/payment-vnpay")
+public class PaymentVPNController {
     @GetMapping("/pay")
     public ResponseEntity<?> getPay(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = 10000*100;
+        long amount = 50000*100;
         String bankCode = "NCB";
 
         String vnp_TxnRef = Config.getRandomNumber(8);
@@ -101,6 +107,36 @@ public class PaymentController {
         response.setCode("00");
         response.setMessage("success");
         response.setData(paymentUrl);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<?> getResult(@RequestParam(name = "vnp_Amount") String vnpAmount,
+                                       @RequestParam(name = "vnp_BankCode") String vnpBankCode,
+                                       @RequestParam(name = "vnp_BankTranNo") String vnpBankTranNo,
+                                       @RequestParam(name = "vnp_CardType") String vnpCardType,
+                                       @RequestParam(name = "vnp_OrderInfo") String vnpOrderInfo,
+                                       @RequestParam(name = "vnp_PayDate") String vnpPayDate,
+                                       @RequestParam(name = "vnp_ResponseCode") String vnpResponseCode,
+                                       @RequestParam(name = "vnp_TmnCode") String vnpTmnCode,
+                                       @RequestParam(name = "vnp_TransactionNo") String vnpTransactionNo,
+                                       @RequestParam(name = "vnp_TransactionStatus") String vnpTransactionStatus,
+                                       @RequestParam(name = "vnp_TxnRef") String vnpTxnRef,
+                                       @RequestParam(name = "vnp_SecureHash") String vnpSecureHash, Model model
+                                       ) {
+        log.info("vnpAmount|{}|vnpBankCode|{}|vnpBankTranNo|{}|vnpCardType|{}|vnpOrderInfo|{}|vnpPayDate|{}|" +
+                "vnpPayDate|{}|vnpTmnCode|{}|vnpTransactionNo|{}|vnpTransactionStatus|{}|vnpTxnRef|{}|vnpSecureHash|{}",
+                vnpAmount, vnpBankCode, vnpBankTranNo, vnpCardType, vnpOrderInfo, vnpPayDate, vnpPayDate, vnpTmnCode,
+                vnpTransactionNo, vnpTransactionStatus, vnpTxnRef, vnpSecureHash);
+        ApiResponse response = new ApiResponse();
+        if(vnpTransactionStatus.equals("00")) {
+            //TODO save db hoa don
+            response.setCode("200");
+            response.setMessage("Payment success");
+        } else {
+            response.setCode("500");
+            response.setMessage("Payment processing error");
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
