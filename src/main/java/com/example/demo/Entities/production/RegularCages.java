@@ -1,13 +1,18 @@
 package com.example.demo.Entities.production;
 
+import com.example.demo.Entities.dbo.Cart;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "regular_cages", schema = "production")
 public class RegularCages implements Serializable {
@@ -53,4 +58,8 @@ public class RegularCages implements Serializable {
     private Float discount;
     @Column(name = "quantity")
     private Integer quantity;
+    @OneToMany(mappedBy = "regularCages")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Cart> carts;
 }

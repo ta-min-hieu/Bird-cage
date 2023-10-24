@@ -2,11 +2,13 @@ package com.example.demo.controller;
 
 
 import com.example.demo.DTO.ApiResponse;
+import com.example.demo.Repo.CartRepository;
 import com.example.demo.config.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -25,12 +27,15 @@ import java.util.*;
 @Log4j2
 @RequestMapping("/payment-vnpay")
 public class PaymentVPNController {
+    @Autowired
+    CartRepository repository;
     @GetMapping("/pay")
-    public ResponseEntity<?> getPay(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public ResponseEntity<?> getPay(HttpServletRequest req, HttpServletResponse resp,
+                                    @RequestParam(name = "amount") long amount) throws ServletException, IOException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = 50000*100;
+        amount = amount*100;
         String bankCode = "NCB";
 
         String vnp_TxnRef = Config.getRandomNumber(8);
@@ -44,6 +49,7 @@ public class PaymentVPNController {
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
+//        vnp_Params.put("username", username);
 
         if (bankCode != null && !bankCode.isEmpty()) {
             vnp_Params.put("vnp_BankCode", bankCode);
@@ -130,9 +136,9 @@ public class PaymentVPNController {
                 vnpTransactionNo, vnpTransactionStatus, vnpTxnRef, vnpSecureHash);
         ApiResponse response = new ApiResponse();
         if(vnpTransactionStatus.equals("00")) {
-            //TODO save db hoa don
             response.setCode("200");
             response.setMessage("Payment success");
+//            repository.updateAllBought(username);
         } else {
             response.setCode("500");
             response.setMessage("Payment processing error");

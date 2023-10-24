@@ -14,8 +14,6 @@ import java.util.Date;
 public class CustomCageOrders implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
     @Column(name = "order_id")
     private Integer orderId;
     @Column(name = "customer_id")
