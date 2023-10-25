@@ -30,7 +30,7 @@ public class CartController {
         if(page == null)
             page = 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = 1000;
         Page<Cart> objectPage = service.get(username, page, pageSize);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());

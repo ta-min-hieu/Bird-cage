@@ -29,7 +29,7 @@ public class RegularCagesController {
         if(page == null)
             page = 1;
         if(pageSize == null)
-            pageSize = 10;
+            pageSize = 1000;
         Page<RegularCages> objectPage = service.get(cageName, birdtypeId, cageId, page, pageSize);
         List<RegularCages> list = objectPage.toList();
         PageDto response = PageDto.builder()
