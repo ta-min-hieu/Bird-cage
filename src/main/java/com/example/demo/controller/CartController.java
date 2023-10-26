@@ -85,10 +85,13 @@ public class CartController {
 
     @GetMapping(value = {"/bill"})
     public ResponseEntity<?> bill(@RequestParam(name = "username", required = false) String username) {
-        service.bill(username);
+        Page<Cart> cartPage = service.bill(username);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message("success")
+                .totalPages(cartPage.getTotalPages())
+                .totalItems((int) cartPage.getTotalElements())
+                .list(Collections.singletonList(cartPage.toList()))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

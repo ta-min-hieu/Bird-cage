@@ -55,7 +55,10 @@ public class CartService {
         return Objects.requireNonNull(response.getBody()).getData();
     }
 
-    public void bill(String username) {
+    public Page<Cart> bill(String username) {
+        Pageable pageable = PageRequest.of(0, 1000);
+        Page<Cart> cartPage = repository.get(username, pageable);
         repository.updateAllBought(username);
+        return cartPage;
     }
 }
