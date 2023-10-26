@@ -17,4 +17,5 @@ public class PageDto {
     private Integer totalPages;
     private int totalItems;
     private List<Object> list;
+    private Object object;
 }

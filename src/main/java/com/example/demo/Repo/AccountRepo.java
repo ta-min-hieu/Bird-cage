@@ -35,4 +35,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
 	@Query(value = "select * from sales.accounts where username = :username", nativeQuery = true)
 	public Account getAccountByUserName(@Param("username") String username);
+
+	@Query(value = "select * from sales.accounts where username = :input or account_id = :input", nativeQuery = true)
+	public Account getAccountInfor(@Param("input") String input);
 }

@@ -1,19 +1,18 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.*;
+import com.example.demo.Entities.dbo.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.DTO.LoginDTO;
-import com.example.demo.DTO.TokenDTO;
-import com.example.demo.DTO.UserNameDTO;
-import com.example.demo.DTO.registerDTO;
 import com.example.demo.Entities.sales.Account;
 import com.example.demo.Service.AccountService;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/login")
@@ -68,5 +67,16 @@ public class AccountController {
 	@PostMapping("/registerVerify")
 	public void registerVerify(@RequestBody TokenDTO DTO) {
 		accservice.setEnable(DTO.getToken());
+	}
+
+	@GetMapping(value = {"/account-info"})
+	public ResponseEntity<?> accountInfo(@RequestParam(name = "input", required = false) String input) {
+		Account account = accservice.getAccountInfor(input);
+		PageDto response = PageDto.builder()
+				.code(200)
+				.message("success")
+				.object(account)
+				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

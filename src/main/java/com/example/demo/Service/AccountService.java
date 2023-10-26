@@ -102,4 +102,8 @@ public class AccountService {
 			throw new RuntimeException("Token not found");
 		}
 	}
+
+	public Account getAccountInfor(String input) {
+		return accrepo.getAccountInfor(input);
+	}
 }
