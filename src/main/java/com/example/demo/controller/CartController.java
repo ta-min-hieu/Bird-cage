@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.DTO.ApiResponse;
 import com.example.demo.DTO.PageDto;
 import com.example.demo.Entities.dbo.Cart;
+import com.example.demo.Repo.CartRepository;
 import com.example.demo.Service.CartService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import java.util.List;
 public class CartController {
     @Autowired
     CartService service;
+    @Autowired
+    CartRepository repository;
     @GetMapping(value = {"/get"})
     public ResponseEntity<?> get(@RequestParam(name = "page", required = false) Integer page,
                                  @RequestParam(name = "pageSize", required = false) Integer pageSize,
@@ -90,5 +93,16 @@ public class CartController {
 //                .list(Collections.singletonList(cartPage.toList()))
 //                .build();
         return new ResponseEntity<>(cartPage.toList(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/bill-all"})
+    public ResponseEntity<?> billAll(@RequestParam(name = "username", required = false) String username) {
+        List<Cart> list = repository.getAllBill();
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message(repository.sumPriceBillAll())
+                .list(new ArrayList<>(list))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

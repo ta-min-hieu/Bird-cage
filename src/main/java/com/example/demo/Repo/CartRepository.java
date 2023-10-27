@@ -36,4 +36,11 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE() where username = :username and status is null",
             nativeQuery = true)
     void updateAllBought(@Param(value = "username") String username);
+
+    @Query(value = "select * from cart where status is not null", nativeQuery = true)
+    List<Cart> getAllBill();
+
+    @Query(value = "select sum(cage_price) from dbo.cart inner join production.regular_cages on cart.product_id = regular_cages.cage_id\n" +
+            "where cart.status is not null", nativeQuery = true)
+    String sumPriceBillAll();
 }
