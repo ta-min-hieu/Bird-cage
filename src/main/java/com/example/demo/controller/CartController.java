@@ -105,4 +105,13 @@ public class CartController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(value = {"/price-by-id"})
+    public ResponseEntity<?> billAllPRICE(@RequestParam(name = "username", required = false) String username) {
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message(repository.sumPriceById(username))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
