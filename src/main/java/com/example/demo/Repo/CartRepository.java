@@ -15,8 +15,8 @@ import java.util.List;
 @Repository
 @Transactional
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    @Query(value = "SELECT * FROM dbo.cart where username = :username and status is null",
-            countQuery = "SELECT count(*) FROM dbo.cart where username = :username and status is null",
+    @Query(value = "SELECT * FROM dbo.cart where (:username is null or username = :username) and status is null",
+            countQuery = "SELECT count(*) FROM dbo.cart where (:username is null or username = :username) and status is null",
             nativeQuery = true)
     Page<Cart> get(@Param(value = "username") String username, Pageable pageable);
     @Query(value = "select * from cart where username = :username and status is null",
