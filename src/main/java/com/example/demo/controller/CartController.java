@@ -34,14 +34,14 @@ public class CartController {
         Page<Cart> objectPage = service.get(username, page, pageSize);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());
-        PageDto response = PageDto.builder()
-                .code(200)
-                .message("success")
-                .totalPages(objectPage.getTotalPages())
-                .totalItems((int) objectPage.getTotalElements())
-                .list(Collections.singletonList(list)).build();
+//        PageDto response = PageDto.builder()
+//                .code(200)
+//                .message("success")
+//                .totalPages(objectPage.getTotalPages())
+//                .totalItems((int) objectPage.getTotalElements())
+//                .list(Collections.singletonList(list)).build();
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping(value = {"/remove-one"})
@@ -72,27 +72,23 @@ public class CartController {
     @GetMapping(value = {"/pay"})
     public ResponseEntity<?> pay(@RequestParam(name = "username", required = false) String username) {
         String paymentUrl = service.processPay(username);
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .build();
-        ApiResponse response = new ApiResponse();
-        response.setCode("200");
-        response.setMessage("success");
-        response.setData(paymentUrl);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+//        ApiResponse response = new ApiResponse();
+//        response.setCode("200");
+//        response.setMessage("success");
+//        response.setData(paymentUrl);
+        return new ResponseEntity<>(paymentUrl, HttpStatus.OK);
     }
 
     @GetMapping(value = {"/bill"})
     public ResponseEntity<?> bill(@RequestParam(name = "username", required = false) String username) {
         Page<Cart> cartPage = service.bill(username);
-        PageDto response = PageDto.builder()
-                .code(200)
-                .message("success")
-                .totalPages(cartPage.getTotalPages())
-                .totalItems((int) cartPage.getTotalElements())
-                .list(Collections.singletonList(cartPage.toList()))
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+//        PageDto response = PageDto.builder()
+//                .code(200)
+//                .message("success")
+//                .totalPages(cartPage.getTotalPages())
+//                .totalItems((int) cartPage.getTotalElements())
+//                .list(Collections.singletonList(cartPage.toList()))
+//                .build();
+        return new ResponseEntity<>(cartPage.toList(), HttpStatus.OK);
     }
 }

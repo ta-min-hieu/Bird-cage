@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,15 +34,15 @@ public class RegularCagesController {
             pageSize = 1000;
         Page<RegularCages> objectPage = service.get(cageName, birdtypeId, cageId, page, pageSize);
         List<RegularCages> list = objectPage.toList();
-        PageDto response = PageDto.builder()
-                .code(200)
-                .message("success")
-                .totalPages(objectPage.getTotalPages())
-                .totalItems((int) objectPage.getTotalElements())
-                .list(Collections.singletonList(list))
-                .build();
+//        PageDto response = PageDto.builder()
+//                .code(200)
+//                .message("success")
+//                .totalPages(objectPage.getTotalPages())
+//                .totalItems((int) objectPage.getTotalElements())
+//                .list(Collections.singletonList(list))
+//                .build();
 
         log.info("objects.toList|" + objectPage.toList());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

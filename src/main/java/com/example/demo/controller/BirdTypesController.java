@@ -23,12 +23,12 @@ public class BirdTypesController {
     @GetMapping(value = {"/get"})
     public ResponseEntity<?> get() {
         List<BirdTypes> list = service.get();
-        log.info("listlist|" + list.toString());
-        PageDto response = PageDto.builder()
-                .code(200)
-                .message("success")
-                .list(Collections.singletonList(list)).build();
+//        log.info("listlist|" + list.toString());
+//        PageDto response = PageDto.builder()
+//                .code(200)
+//                .message("success")
+//                .list(Collections.singletonList(list)).build();
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
