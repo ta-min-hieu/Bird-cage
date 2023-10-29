@@ -15,13 +15,15 @@ import java.util.List;
 @Repository
 @Transactional
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    @Query(value = "SELECT * FROM dbo.cart where (:username is null or username = :username) and status is null",
-            countQuery = "SELECT count(*) FROM dbo.cart where (:username is null or username = :username) and status is null",
+    @Query(value = "SELECT * FROM dbo.cart where (:username is null or username = :username) " +
+            "and (:status is null or status = :status)",
+            countQuery = "SELECT count(*) FROM dbo.cart where (:username is null or username = :username) " +
+                    "and (:status is null or status = :status)",
             nativeQuery = true)
-    Page<Cart> get(@Param(value = "username") String username, Pageable pageable);
-    @Query(value = "select * from cart where username = :username and status is null",
+    Page<Cart> get(@Param(value = "username") String username, @Param(value = "status") Integer status, Pageable pageable);
+    @Query(value = "select * from cart where username = :username and (:status is null or status = :status) ",
             nativeQuery = true)
-    List<Cart> getAll(@Param(value = "username") String username);
+    List<Cart> getAll(@Param(value = "username") String username, @Param(value = "status") Integer status);
     @Modifying
     @Query(value = "DELETE FROM dbo.cart where username = :username and product_id = :product_id and status is null",
             nativeQuery = true)
@@ -33,9 +35,10 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     void removeAll(@Param(value = "username") String username);
 
     @Modifying
-    @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE() where username = :username and status is null",
+    @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE() " +
+            "where username = :username and (:status is null or status = :status)",
             nativeQuery = true)
-    void updateAllBought(@Param(value = "username") String username);
+    void updateAllBought(@Param(value = "username") String username, @Param(value = "status") Integer status);
 
     @Query(value = "select * from cart where status is not null", nativeQuery = true)
     List<Cart> getAllBill();

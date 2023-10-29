@@ -25,6 +25,14 @@ public class Cart {
     private Integer status;
     @Column(name = "date_pay")
     private Date datePay;
+    @Column(name = "shape")
+    private String shape;
+    @Column(name = "material")
+    private String material;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "price")
+    private Integer price;
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "cage_id", insertable = false, updatable = false)
     private RegularCages regularCages;

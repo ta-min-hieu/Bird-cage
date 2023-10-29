@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.ApiResponse;
 import com.example.demo.DTO.PageDto;
 import com.example.demo.Entities.dbo.Cart;
 import com.example.demo.Repo.CartRepository;
@@ -29,12 +30,13 @@ public class CartController {
     @GetMapping(value = {"/get"})
     public ResponseEntity<?> get(@RequestParam(name = "page", required = false) Integer page,
                                  @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                 @RequestParam(name = "username", required = false) String username) {
+                                 @RequestParam(name = "username", required = false) String username,
+                                 @RequestParam(name = "status", required = false) Integer status) {
         if(page == null)
             page = 1;
         if(pageSize == null)
             pageSize = 1000;
-        Page<Cart> objectPage = service.get(username, page, pageSize);
+        Page<Cart> objectPage = service.get(username, page, pageSize, status);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());
 //        PageDto response = PageDto.builder()
@@ -60,10 +62,21 @@ public class CartController {
 
     @GetMapping(value = {"/add-to-cart"})
     public ResponseEntity<?> addToCart(@RequestParam(name = "productId", required = false) Integer productId,
-                                       @RequestParam(name = "username", required = false) String username) {
+                                       @RequestParam(name = "username", required = false) String username,
+                                       @RequestParam(name = "shape", required = false) String shape,
+                                       @RequestParam(name = "material", required = false) String material,
+                                       @RequestParam(name = "description", required = false) String description) {
         Cart object = new Cart();
         object.setUsername(username);
         object.setProductId(productId);
+        if(productId == null) {
+            object.setStatus(2);
+            object.setShape(shape);
+            object.setMaterial(material);
+            object.setDescription(description);
+            object.setPrice(service.processPriceOrder(shape, material));
+        }
+        log.info("Object save|" + object);
         service.addToCart(object);
         PageDto response = PageDto.builder()
                 .code(200)
@@ -73,26 +86,28 @@ public class CartController {
     }
 
     @GetMapping(value = {"/pay"})
-    public ResponseEntity<?> pay(@RequestParam(name = "username", required = false) String username) {
-        String paymentUrl = service.processPay(username);
-//        ApiResponse response = new ApiResponse();
-//        response.setCode("200");
-//        response.setMessage("success");
-//        response.setData(paymentUrl);
-        return new ResponseEntity<>(paymentUrl, HttpStatus.OK);
+    public ResponseEntity<?> pay(@RequestParam(name = "username", required = false) String username,
+                                 @RequestParam(name = "status", required = false) Integer status) {
+        String paymentUrl = service.processPay(username, status);
+        ApiResponse response = new ApiResponse();
+        response.setCode("200");
+        response.setMessage("success");
+        response.setData(paymentUrl);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = {"/bill"})
-    public ResponseEntity<?> bill(@RequestParam(name = "username", required = false) String username) {
-        Page<Cart> cartPage = service.bill(username);
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .totalPages(cartPage.getTotalPages())
-//                .totalItems((int) cartPage.getTotalElements())
-//                .list(Collections.singletonList(cartPage.toList()))
-//                .build();
-        return new ResponseEntity<>(cartPage.toList(), HttpStatus.OK);
+    public ResponseEntity<?> bill(@RequestParam(name = "username", required = false) String username,
+                                  @RequestParam(name = "status", required = false) Integer status) {
+        Page<Cart> cartPage = service.bill(username, status);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .totalPages(cartPage.getTotalPages())
+                .totalItems((int) cartPage.getTotalElements())
+                .list(new ArrayList<>(cartPage.toList()))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = {"/bill-all"})

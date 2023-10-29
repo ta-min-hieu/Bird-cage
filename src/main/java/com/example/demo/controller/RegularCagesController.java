@@ -34,15 +34,15 @@ public class RegularCagesController {
             pageSize = 1000;
         Page<RegularCages> objectPage = service.get(cageName, birdtypeId, cageId, page, pageSize);
         List<RegularCages> list = objectPage.toList();
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .totalPages(objectPage.getTotalPages())
-//                .totalItems((int) objectPage.getTotalElements())
-//                .list(Collections.singletonList(list))
-//                .build();
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .totalPages(objectPage.getTotalPages())
+                .totalItems((int) objectPage.getTotalElements())
+                .list(new ArrayList<>(list))
+                .build();
 
         log.info("objects.toList|" + objectPage.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -24,9 +24,9 @@ public class CartService {
     CartRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    public Page<Cart> get(String username, int pageNo, int pageSize) {
+    public Page<Cart> get(String username, int pageNo, int pageSize, Integer status) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return repository.get(username, pageable);
+        return repository.get(username, status, pageable);
     }
     public void addToCart(Cart object) {
         repository.save(object);
@@ -40,12 +40,20 @@ public class CartService {
         repository.removeAll(username);
     }
 
-    public String processPay(String username) {
-        List<Cart> list = repository.getAll(username);
+    public String processPay(String username, Integer status) {
+        List<Cart> list = repository.getAll(username, status);
         int price = 0;
-        for (Cart cart : list) {
-            if (cart.getRegularCages() != null && cart.getRegularCages().getCagePrice() != null) {
-                price += cart.getRegularCages().getCagePrice();
+        if(status == null) {
+            for (Cart cart : list) {
+                if (cart.getRegularCages() != null && cart.getRegularCages().getCagePrice() != null) {
+                    price += cart.getRegularCages().getCagePrice();
+                }
+            }
+        }
+        else {
+            for (Cart cart : list) {
+                if(cart.getPrice() != null)
+                    price += cart.getPrice();
             }
         }
         String apiEndpoint = "http://localhost:8089/payment-vnpay/pay?amount=" + price;
@@ -55,10 +63,42 @@ public class CartService {
         return Objects.requireNonNull(response.getBody()).getData();
     }
 
-    public Page<Cart> bill(String username) {
+    public Page<Cart> bill(String username, Integer status) {
         Pageable pageable = PageRequest.of(0, 1000);
-        Page<Cart> cartPage = repository.get(username, pageable);
-        repository.updateAllBought(username);
+        Page<Cart> cartPage = repository.get(username, status, pageable);
+        repository.updateAllBought(username, status);
         return cartPage;
+    }
+
+    public Integer processPriceOrder(String shape, String material) {
+        int price = 1000000;
+        price = (int) (price * processShape(shape) * processMaterial(material));
+        return price;
+    }
+
+    public float processShape(String shape) {
+        float rate = 1f;
+        if(shape == null || shape.equals("vuông"))
+            rate = 1f;
+        else if (shape.equals("tròn"))
+            rate = 1.05f;
+        else if(shape.equals("thái"))
+            rate = 1.1f;
+        else // uốn vai
+            rate = 1.15f;
+        return rate;
+    }
+
+    public float processMaterial(String material) {
+        float rate = 1f;
+        if(material == null || material.equals("tre già"))
+            rate = 1f;
+        else if (material.equals("tre xử lý") || material.equals("mây") || material.equals("inox"))
+            rate = 1.05f;
+        else if(material.equals("gỗ mun"))
+            rate = 1.1f;
+        else // huyết hương đỏ
+            rate = 1.15f;
+        return rate;
     }
 }
