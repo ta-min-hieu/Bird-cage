@@ -19,6 +19,7 @@ import java.util.List;
 
 @Controller
 @Log4j2
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/cart")
 public class CartController {
     @Autowired
@@ -37,14 +38,14 @@ public class CartController {
         Page<Cart> objectPage = service.get(username, page, pageSize, status);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .totalPages(objectPage.getTotalPages())
-//                .totalItems((int) objectPage.getTotalElements())
-//                .list(Collections.singletonList(list)).build();
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .totalPages(objectPage.getTotalPages())
+                .totalItems((int) objectPage.getTotalElements())
+                .list(new ArrayList<>(list)).build();
 
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = {"/remove-one"})
@@ -132,15 +133,15 @@ public class CartController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-//    @GetMapping(value = {"/remove-all-customize"})
-//    public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
-//        repository.removeAllOrderCustomize(username);
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .build();
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
+    @GetMapping(value = {"/remove-all-customize"})
+    public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
+        repository.removeAllOrderCustomize(username);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @PostMapping(value = {"/add-to-cart-v2"})
     public ResponseEntity<?> addToCartV2(@RequestBody AddCartDto addCartDto) {

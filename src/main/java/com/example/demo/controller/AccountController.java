@@ -72,11 +72,11 @@ public class AccountController {
 	@GetMapping(value = {"/account-info"})
 	public ResponseEntity<?> accountInfo(@RequestParam(name = "input", required = false) String input) {
 		Account account = accservice.getAccountInfor(input);
-//		PageDto response = PageDto.builder()
-//				.code(200)
-//				.message("success")
-//				.object(account)
-//				.build();
-		return new ResponseEntity<>(account, HttpStatus.OK);
+		PageDto response = PageDto.builder()
+				.code(200)
+				.message("success")
+				.object(account)
+				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

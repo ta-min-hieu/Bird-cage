@@ -18,6 +18,7 @@ import java.util.List;
 
 @Controller
 @Log4j2
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/regular-cage")
 public class RegularCagesController {
     @Autowired
