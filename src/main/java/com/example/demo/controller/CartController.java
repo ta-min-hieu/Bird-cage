@@ -71,6 +71,7 @@ public class CartController {
         object.setUsername(username);
         object.setProductId(productId);
         if(productId == null) {
+            repository.removeAllOrderCustomize(username);
             object.setStatus(2);
             object.setShape(shape);
             object.setMaterial(material);
@@ -132,13 +133,13 @@ public class CartController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/remove-all-customize"})
-    public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
-        repository.removeAllOrderCustomize(username);
-        PageDto response = PageDto.builder()
-                .code(200)
-                .message("success")
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+//    @GetMapping(value = {"/remove-all-customize"})
+//    public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
+//        repository.removeAllOrderCustomize(username);
+//        PageDto response = PageDto.builder()
+//                .code(200)
+//                .message("success")
+//                .build();
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 }
