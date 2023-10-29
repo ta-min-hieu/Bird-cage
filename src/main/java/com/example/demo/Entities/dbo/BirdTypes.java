@@ -19,4 +19,6 @@ public class BirdTypes {
     private Integer basePrice;
     @Column(name = "base_time")
     private Integer baseTime;
+    @Column(name = "img")
+    private String img;
 }

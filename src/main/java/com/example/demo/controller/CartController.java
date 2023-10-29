@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.AddCartDto;
 import com.example.demo.DTO.ApiResponse;
 import com.example.demo.DTO.PageDto;
 import com.example.demo.Entities.dbo.Cart;
@@ -11,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +70,7 @@ public class CartController {
         object.setUsername(username);
         object.setProductId(productId);
         if(productId == null) {
-            repository.removeAllOrderCustomize(username);
+            repository.removeAllOrderCustomize(username); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
             object.setStatus(2);
             object.setShape(shape);
             object.setMaterial(material);
@@ -142,4 +141,27 @@ public class CartController {
 //                .build();
 //        return new ResponseEntity<>(response, HttpStatus.OK);
 //    }
+
+    @PostMapping(value = {"/add-to-cart-v2"})
+    public ResponseEntity<?> addToCartV2(@RequestBody AddCartDto addCartDto) {
+        Cart object = new Cart();
+        object.setUsername(addCartDto.getUsername());
+        object.setProductId(addCartDto.getProductId());
+        if(addCartDto.getProductId() == null) {
+            repository.removeAllOrderCustomize(addCartDto.getUsername()); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
+            object.setStatus(2);
+            object.setShape(addCartDto.getShape());
+            object.setMaterial(addCartDto.getMaterial());
+            object.setDescription(addCartDto.getDescription());
+            object.setPrice(service.processPriceOrder(addCartDto.getShape(), addCartDto.getMaterial(), addCartDto.getBasePrice()));
+            object.setBirdtypeId(addCartDto.getBirdtypeId());
+        }
+        log.info("Object save|" + object);
+        service.addToCart(object);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
