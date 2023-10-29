@@ -38,7 +38,7 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     @Modifying
     @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE(), bill_id = :bill_id " +
-            "where username = :username and (:status is null or status = :status)",
+            "where username = :username and ((:status IS NULL AND status IS NULL) OR (status = :status))",
             nativeQuery = true)
     void updateAllBought(@Param(value = "username") String username,
                          @Param(value = "status") Integer status,
