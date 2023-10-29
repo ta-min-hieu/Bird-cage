@@ -70,9 +70,9 @@ public class CartService {
         return cartPage;
     }
 
-    public Integer processPriceOrder(String shape, String material) {
+    public Integer processPriceOrder(String shape, String material, Integer basePrice) {
         int price = 1000000;
-        price = (int) (price * processShape(shape) * processMaterial(material));
+        price = (int) (basePrice + price * processShape(shape) * processMaterial(material));
         return price;
     }
 

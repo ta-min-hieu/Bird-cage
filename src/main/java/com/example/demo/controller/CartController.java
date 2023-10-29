@@ -65,7 +65,9 @@ public class CartController {
                                        @RequestParam(name = "username", required = false) String username,
                                        @RequestParam(name = "shape", required = false) String shape,
                                        @RequestParam(name = "material", required = false) String material,
-                                       @RequestParam(name = "description", required = false) String description) {
+                                       @RequestParam(name = "description", required = false) String description,
+                                       @RequestParam(name = "birdtypeId", required = false) String birdtypeId,
+                                       @RequestParam(name = "basePrice", required = false) Integer basePrice) {
         Cart object = new Cart();
         object.setUsername(username);
         object.setProductId(productId);
@@ -74,7 +76,8 @@ public class CartController {
             object.setShape(shape);
             object.setMaterial(material);
             object.setDescription(description);
-            object.setPrice(service.processPriceOrder(shape, material));
+            object.setPrice(service.processPriceOrder(shape, material, basePrice));
+            object.setBirdtypeId(birdtypeId);
         }
         log.info("Object save|" + object);
         service.addToCart(object);

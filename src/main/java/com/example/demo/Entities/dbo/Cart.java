@@ -31,6 +31,8 @@ public class Cart {
     private String material;
     @Column(name = "description")
     private String description;
+    @Column(name = "birdtypeId")
+    private String birdtypeId;
     @Column(name = "price")
     private Integer price;
     @ManyToOne
