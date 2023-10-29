@@ -35,6 +35,7 @@ public class CartController {
             page = 1;
         if(pageSize == null)
             pageSize = 1000;
+        repository.removeAllOrderCustomize(username);
         Page<Cart> objectPage = service.get(username, page, pageSize, status);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());
@@ -162,6 +163,17 @@ public class CartController {
         PageDto response = PageDto.builder()
                 .code(200)
                 .message("success")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/by-bill-id"})
+    public ResponseEntity<?> billAllByBillId(@RequestParam(name = "bill_id", required = false) Integer billId) {
+        List<Cart> list = repository.getAllByBillId(billId);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .list(new ArrayList<>(list))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

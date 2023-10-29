@@ -18,7 +18,6 @@ import java.util.Objects;
 
 @Service
 @Log4j2
-@Transactional
 public class CartService {
     @Autowired
     CartRepository repository;
@@ -65,9 +64,14 @@ public class CartService {
 
     public Page<Cart> bill(String username, Integer status) {
         Pageable pageable = PageRequest.of(0, 1000);
-        Page<Cart> cartPage = repository.get(username, status, pageable);
-        repository.updateAllBought(username, status);
-        return cartPage;
+        Integer billId = repository.countBillId();
+        if(billId == null)
+            billId = 1;
+        else
+            billId += 1;
+        log.info("billId|" + billId);
+        repository.updateAllBought(username, status, billId);
+        return repository.getPageByBillId(billId, pageable);
     }
 
     public Integer processPriceOrder(String shape, String material, Integer basePrice) {
