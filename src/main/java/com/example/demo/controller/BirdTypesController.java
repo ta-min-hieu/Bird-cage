@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,12 +24,12 @@ public class BirdTypesController {
     @GetMapping(value = {"/get"})
     public ResponseEntity<?> get() {
         List<BirdTypes> list = service.get();
-//        log.info("listlist|" + list.toString());
-//        PageDto response = PageDto.builder()
-//                .code(200)
-//                .message("success")
-//                .list(Collections.singletonList(list)).build();
+        log.info("listlist|" + list.toString());
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .list(new ArrayList<>(list)).build();
 
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

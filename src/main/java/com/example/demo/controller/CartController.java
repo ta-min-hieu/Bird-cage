@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -129,6 +128,16 @@ public class CartController {
         PageDto response = PageDto.builder()
                 .code(200)
                 .message(repository.sumPriceById(username))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/remove-all-customize"})
+    public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
+        repository.removeAllOrderCustomize(username);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -50,4 +50,8 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Query(value = "select sum(cage_price) from dbo.cart inner join production.regular_cages on cart.product_id = regular_cages.cage_id\n" +
             "where cart.status is null and username = :username", nativeQuery = true)
     String sumPriceById(@Param(value = "username") String username);
+
+    @Modifying
+    @Query(value = "DELETE FROM dbo.cart where username = :username and status = 2", nativeQuery = true)
+    void removeAllOrderCustomize(@Param(value = "username") String username);
 }
