@@ -37,12 +37,15 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     void removeAll(@Param(value = "username") String username);
 
     @Modifying
-    @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE(), bill_id = :bill_id " +
+    @Query(value = "update dbo.cart set status = 1, date_pay = GETDATE(), bill_id = :bill_id, created_date = :createdDate," +
+            "expected_date = :expectedDate " +
             "where username = :username and ((:status IS NULL AND status IS NULL) OR (status = :status))",
             nativeQuery = true)
     void updateAllBought(@Param(value = "username") String username,
                          @Param(value = "status") Integer status,
-                         @Param(value = "bill_id") Integer billId);
+                         @Param(value = "bill_id") Integer billId,
+                         @Param(value = "createdDate") String createdDate,
+                         @Param(value = "expectedDate") String expectedDate);
 
     @Query(value = "select * from cart where status is not null and status != 2", nativeQuery = true)
     List<Cart> getAllBill();

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +72,16 @@ public class CartService {
         else
             billId += 1;
         log.info("billId|" + billId);
-        repository.updateAllBought(username, status, billId);
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDate = dateFormat.format(calendar.getTime());
+        System.out.println("Ngày hiện tại: " + currentDate);
+
+        // Thêm 5 ngày
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        String futureDate = dateFormat.format(calendar.getTime());
+        log.info("Ngày hiện tại + 5 ngày: " + futureDate);
+        repository.updateAllBought(username, status, billId, currentDate, futureDate);
         return repository.getPageByBillId(billId, pageable);
     }
 

@@ -37,6 +37,10 @@ public class Cart {
     private String birdtypeId;
     @Column(name = "price")
     private Integer price;
+    @Column(name = "created_date")
+    private String createdDate;
+    @Column(name = "expected_date")
+    private String expectedDate;
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "cage_id", insertable = false, updatable = false)
     private RegularCages regularCages;

@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Controller
@@ -35,7 +37,7 @@ public class CartController {
             page = 1;
         if(pageSize == null)
             pageSize = 1000;
-        repository.removeAllOrderCustomize(username);
+//        repository.removeAllOrderCustomize(username);
         Page<Cart> objectPage = service.get(username, page, pageSize, status);
         List<Cart> list = objectPage.toList();
         log.info("listlist|" + objectPage.toList().toString());
@@ -72,7 +74,7 @@ public class CartController {
         object.setUsername(username);
         object.setProductId(productId);
         if(productId == null) {
-            repository.removeAllOrderCustomize(username); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
+//            repository.removeAllOrderCustomize(username); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
             object.setStatus(2);
             object.setShape(shape);
             object.setMaterial(material);
@@ -136,7 +138,7 @@ public class CartController {
 
     @GetMapping(value = {"/remove-all-customize"})
     public ResponseEntity<?> removeAllCustomize(@RequestParam(name = "username", required = false) String username) {
-        repository.removeAllOrderCustomize(username);
+//        repository.removeAllOrderCustomize(username);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message("success")
@@ -150,7 +152,7 @@ public class CartController {
         object.setUsername(addCartDto.getUsername());
         object.setProductId(addCartDto.getProductId());
         if(addCartDto.getProductId() == null) {
-            repository.removeAllOrderCustomize(addCartDto.getUsername()); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
+//            repository.removeAllOrderCustomize(addCartDto.getUsername()); //TH nó đặt hàng, nó hủy thanh toán xong lại vào đặt
             object.setStatus(2);
             object.setShape(addCartDto.getShape());
             object.setMaterial(addCartDto.getMaterial());
