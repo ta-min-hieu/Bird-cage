@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.DTO.ApiResponse;
 import com.example.demo.Entities.dbo.Cart;
 import com.example.demo.Repo.CartRepository;
+import com.example.demo.Repo.RegularCagesRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,8 @@ import java.util.Objects;
 public class CartService {
     @Autowired
     CartRepository repository;
+    @Autowired
+    RegularCagesRepository cagesRepository;
     @Autowired
     private RestTemplate restTemplate;
     public Page<Cart> get(String username, int pageNo, int pageSize, Integer status) {
@@ -82,7 +85,13 @@ public class CartService {
         String futureDate = dateFormat.format(calendar.getTime());
         log.info("Ngày hiện tại + 5 ngày: " + futureDate);
         repository.updateAllBought(username, status, billId, currentDate, futureDate);
-        return repository.getPageByBillId(billId, pageable);
+        Page<Cart> cartPage = repository.getPageByBillId(billId, pageable);
+        List<Cart> list = cartPage.toList();
+        log.info("cartPageList|" + cartPage.toList());
+        for (Cart cart : list)
+            if(cart.getProductId() != null)
+                cagesRepository.updateQuantity(cart.getProductId());
+        return cartPage;
     }
 
     public Integer processPriceOrder(String shape, String material, Integer basePrice) {
