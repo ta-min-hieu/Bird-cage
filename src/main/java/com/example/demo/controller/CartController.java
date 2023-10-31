@@ -139,13 +139,17 @@ public class CartController {
     @GetMapping(value = {"/bill-all"})
     public ResponseEntity<?> billAll(@RequestParam(name = "page", required = false) Integer page,
                                      @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                     @RequestParam(name = "username", required = false) String username) {
+                                     @RequestParam(name = "status", required = false) Integer status) {
         if(page == null)
             page = 1;
         if(pageSize == null)
             pageSize = 1000;
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Cart> cartPage = repository.getAllBill(pageable);
+        Integer productId = null;
+        if(status != null) {
+            productId = 1;
+        }
+        Page<Cart> cartPage = repository.getAllBill(productId, pageable);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message(repository.sumPriceBillAll())
