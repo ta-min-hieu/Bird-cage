@@ -77,4 +77,9 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Query(value = "select * from cart where bill_id = :bill_id",
             countQuery = "select count(*) from cart where bill_id = :bill_id", nativeQuery = true)
     Page<Cart> getPageByBillId(@Param(value = "bill_id") Integer billId, Pageable pageable);
+
+    @Modifying
+    @Query(value = "update dbo.cart set status = :status where bill_id = :bill_id", nativeQuery = true)
+    void updateStatusByBillId(@Param(value = "status") Integer status,
+                                 @Param(value = "bill_id") Integer billId);
 }

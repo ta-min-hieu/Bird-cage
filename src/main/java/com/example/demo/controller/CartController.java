@@ -217,4 +217,15 @@ public class CartController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(value = {"/update-status"})
+    public ResponseEntity<?> updateStatusByBillId(@RequestParam(name = "status", required = false) Integer status,
+                                                  @RequestParam(name = "billId", required = false) Integer billId) {
+        repository.updateStatusByBillId(status, billId);
+        PageDto response = PageDto.builder()
+                .code(200)
+                .message("success")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
