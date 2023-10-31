@@ -42,10 +42,22 @@ public class CartController {
 //        repository.removeAllOrderCustomize(username);
         Page<Cart> objectPage = service.get(username, page, pageSize, status);
         List<Cart> list = objectPage.toList();
-        log.info("listlist|" + objectPage.toList().toString());
+        log.info("listlist|" + objectPage.toList());
+        int price = 0;
+        if(status == null) {
+            for (Cart cart : list) {
+                if (cart.getRegularCages() != null && cart.getRegularCages().getCagePrice() != null)
+                    price += cart.getRegularCages().getCagePrice();
+            }
+        } else {
+            for (Cart cart : list) {
+                if(cart.getPrice() != null)
+                    price += cart.getPrice();
+            }
+        }
         PageDto response = PageDto.builder()
                 .code(200)
-                .message("success")
+                .message(String.valueOf(price))
                 .totalPages(objectPage.getTotalPages())
                 .totalItems((int) objectPage.getTotalElements())
                 .list(new ArrayList<>(list)).build();
