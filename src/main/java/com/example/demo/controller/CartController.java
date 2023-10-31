@@ -9,6 +9,8 @@ import com.example.demo.Service.CartService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -103,9 +105,15 @@ public class CartController {
     }
 
     @GetMapping(value = {"/bill"})
-    public ResponseEntity<?> bill(@RequestParam(name = "username", required = false) String username,
+    public ResponseEntity<?> bill(@RequestParam(name = "page", required = false) Integer page,
+                                  @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                  @RequestParam(name = "username", required = false) String username,
                                   @RequestParam(name = "status", required = false) Integer status) {
-        Page<Cart> cartPage = service.bill(username, status);
+        if(page == null)
+            page = 1;
+        if(pageSize == null)
+            pageSize = 1000;
+        Page<Cart> cartPage = service.bill(username, status, page, pageSize);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message("success")
@@ -117,12 +125,21 @@ public class CartController {
     }
 
     @GetMapping(value = {"/bill-all"})
-    public ResponseEntity<?> billAll(@RequestParam(name = "username", required = false) String username) {
-        List<Cart> list = repository.getAllBill();
+    public ResponseEntity<?> billAll(@RequestParam(name = "page", required = false) Integer page,
+                                     @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                     @RequestParam(name = "username", required = false) String username) {
+        if(page == null)
+            page = 1;
+        if(pageSize == null)
+            pageSize = 1000;
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Cart> cartPage = repository.getAllBill(pageable);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message(repository.sumPriceBillAll())
-                .list(new ArrayList<>(list))
+                .totalPages(cartPage.getTotalPages())
+                .totalItems((int) cartPage.getTotalElements())
+                .list(new ArrayList<>(cartPage.toList()))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -170,12 +187,21 @@ public class CartController {
     }
 
     @GetMapping(value = {"/by-bill-id"})
-    public ResponseEntity<?> billAllByBillId(@RequestParam(name = "bill_id", required = false) Integer billId) {
-        List<Cart> list = repository.getAllByBillId(billId);
+    public ResponseEntity<?> billAllByBillId(@RequestParam(name = "page", required = false) Integer page,
+                                             @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                             @RequestParam(name = "bill_id", required = false) Integer billId) {
+        if(page == null)
+            page = 1;
+        if(pageSize == null)
+            pageSize = 1000;
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Cart> cartPage = repository.getAllByBillId(billId, pageable);
         PageDto response = PageDto.builder()
                 .code(200)
                 .message("success")
-                .list(new ArrayList<>(list))
+                .totalPages(cartPage.getTotalPages())
+                .totalItems((int) cartPage.getTotalElements())
+                .list(new ArrayList<>(cartPage.toList()))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

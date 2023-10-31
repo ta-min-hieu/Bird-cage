@@ -49,7 +49,10 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     @Query(value = "select * from cart where status is not null and status != 2", nativeQuery = true)
     List<Cart> getAllBill();
-
+    @Query(value = "select * from cart where status is not null and status != 2",
+            countQuery = "SELECT count(*) FROM status is not null and status != 2",
+            nativeQuery = true)
+    Page<Cart> getAllBill(Pageable pageable);
     @Query(value = "select sum(cage_price) from dbo.cart inner join production.regular_cages on cart.product_id = regular_cages.cage_id\n" +
             "where cart.status is not null", nativeQuery = true)
     String sumPriceBillAll();
@@ -67,7 +70,10 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     @Query(value = "select * from cart where bill_id = :bill_id", nativeQuery = true)
     List<Cart> getAllByBillId(@Param(value = "bill_id") Integer billId);
-
+    @Query(value = "select * from cart where bill_id = :bill_id",
+            countQuery = "SELECT count(*) FROM cart where bill_id = :bill_id",
+            nativeQuery = true)
+    Page<Cart> getAllByBillId(@Param(value = "bill_id") Integer billId, Pageable pageable);
     @Query(value = "select * from cart where bill_id = :bill_id",
             countQuery = "select count(*) from cart where bill_id = :bill_id", nativeQuery = true)
     Page<Cart> getPageByBillId(@Param(value = "bill_id") Integer billId, Pageable pageable);

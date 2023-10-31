@@ -67,8 +67,8 @@ public class CartService {
         return Objects.requireNonNull(response.getBody()).getData();
     }
 
-    public Page<Cart> bill(String username, Integer status) {
-        Pageable pageable = PageRequest.of(0, 1000);
+    public Page<Cart> bill(String username, Integer status, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
         Integer billId = repository.countBillId();
         if(billId == null)
             billId = 1;
